@@ -1,0 +1,13 @@
+body {
+    background: #202020;
+}
+
+
+.gcMainContainer {
+    position:relative;
+}
+
+.gcMainContainer > canvas {
+    display:block;
+    position:absolute;
+}
