@@ -1,20 +1,27 @@
 (function(window, undefined) {
 
+    // Game config
     var config = {
         mainContainer: 'gameContainer',
-        width: 800,
-        height: 600,
 
         map: {
-            canvas: 'canvasBG',
-            backgroundImage: 'images/bg.png'
+            backgroundImage: 'images/bg.png',
+            width: 800,
+            height: 600,
+            limits: {
+                top: 5,
+                right: 750,
+                bottom: 570,
+                left: 65
+            }
         },
 
-        player: {
-            name: 'frago',
-            sprite: 'images/hero.png',
-            width: 35,
-            height: 54
+        // sprites: [ mainPlayer ],
+
+        player: mainPlayer,
+
+        events: {
+            keypress:true
         }
     };
 

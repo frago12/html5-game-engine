@@ -3,7 +3,8 @@
     var _mainContainer = null,
         _isPlaying = false,
         _player = null,
-        _entitiesCanvas = null,
+        _sprites = [],
+        _gameEntities = null,
         _map = null,
         _assets = null,
         _requestAnimFrame =  window.requestAnimationFrame ||
@@ -27,11 +28,20 @@
         _assets = new GameCore.AssetsManager();
         _config = config;
 
+        // Load background map asset
         if (_config.map && _config.map.backgroundImage) {
             _assets.queueDownload( _config.map.backgroundImage );
         }
 
-        if (_config.player && _config.player.sprite) {
+        // Load sprite assets
+        if (_config.sprites) {
+            for (var i=0,len=_config.sprites.length; i<len; i++) {
+                if (_config.sprites[i].sprite) _assets.queueDownload( _config.sprites[i].sprite );
+            }
+        }
+
+        // Load player asset
+        if (_config.player) {
             _assets.queueDownload( _config.player.sprite );
         }
 
@@ -45,10 +55,10 @@
     * Initialize game objects needded
     */
     function loadConfig() {
-        if (!_config) return;
+        if (!_config || !_config.map) return;
 
-        _config.width = _config.width || 400;
-        _config.height = _config.height || 400;
+        _config.width = _config.map.width = _config.map.width || 400;
+        _config.height = _config.map.height = _config.map.height || 400;
 
         // Get main container
         _mainContainer = document.getElementById( _config.mainContainer );
@@ -61,21 +71,37 @@
         // Create Map
         if (_config.map) {
             _map = GameCore.Map.getInstance();
-            var mapCanvas =_map.create( _assets.get(_config.map.backgroundImage), _config.width, _config.height );
+            var mapCanvas = _map.create( _assets.get(_config.map.backgroundImage), _config.map );
             _mainContainer.appendChild( mapCanvas );
         }
 
         // Create entities canvas
-        _entitiesCanvas = GameCore.EntitiesCanvas.getInstance().create( _config.width, _config.height );
-        _mainContainer.appendChild( _entitiesCanvas );
+        _gameEntities = GameCore.EntitiesCanvas.getInstance();
+        _mainContainer.appendChild( _gameEntities.create( _config.width, _config.height ) );
 
-        // Create Player
-        if (_config.player) {
-            _player = new GameCore.Player(_config.player.name, _config.player.width, _config.player.height, _config.player.srcX, _config.player.srcY);
-            _player.setAsset( _assets.get(_config.player.sprite) );
+        // Create sprites
+        if (_config.sprites) {
+            for (var i=0,len=_config.sprites.length; i<len; i++) {
+                _sprites.push( createPlayer( _config.sprites[i] ) );
+            }
         }
 
+        // Set main player
+        if (!_config.player) throw new Error('You have to define a player');
+        _player = createPlayer( _config.player );
+        _sprites.push( _player );
+
+        // Register events
+        if (_config.events && _config.events.keypress) document.addEventListener('keydown', function(e) { checkKey(e); }, false);
+
         begin();
+    }
+
+    function createPlayer( config ) {
+        var player = new GameCore.Sprite( _assets.get(config.sprite), config );
+        if (config.onKeyPress) player.onKeyPress = config.onKeyPress;
+
+        return player;
     }
 
     /*
@@ -89,13 +115,21 @@
 
     function update() {
         // Clear entities
+        _gameEntities.clear();
+
         // Update all enemies
-        _player.update();
+
+        // Update sprites
+        for (var i=0,len=_sprites.length; i<len; i++) {
+            _sprites[i].update();
+        }
     }
 
     function draw() {
-        // Draw all enemies
-        _player.draw();
+        // Draw sprites
+        for (var i=0,len=_sprites.length; i<len; i++) {
+            _sprites[i].draw();
+        }
     }
 
     function loop() {
@@ -104,6 +138,41 @@
             draw();
             _requestAnimFrame(loop);
         }
+    }
+
+    function checkKey(e) {
+        e.preventDefault();
+
+        var key = e.code || e.which,
+            keyInfo = { code:key };
+
+        // Up arrow
+        if (key === 37) {
+            keyInfo.direction = 'left';
+            keyInfo.left = true;
+
+        // Up arrow
+        } else if (key === 38) {
+            keyInfo.direction = 'top';
+            keyInfo.top = true;
+
+        // Down arrow
+        } else if (key === 39) {
+            keyInfo.direction = 'right';
+            keyInfo.right = true;
+
+        // Left key
+    } else if (key === 40) {
+            keyInfo.direction = 'bottom';
+            keyInfo.bottom = true;
+
+        // Spacebar
+        } else if (key === 32) {
+            keyInfo.direction = 'spacebar';
+            keyInfo.spacebar = true;
+        }
+
+        _player.onKeyPress(keyInfo);
     }
 
     function randomRange( min, max ) {
