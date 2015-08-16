@@ -1,13 +1,13 @@
 (function(GameCore, undefined) {
 
-    var _canvas = GameCore.EntitiesCanvas.getInstance(),
+    var _assets = GameCore.AssetsManager.getInstance(),
         centerX = 0,
         centerY = 0,
         spriteX = 0,
         spriteY = 0;
 
-    function Sprite( sprite, config ) {
-        this.sprite = sprite || null;
+    function Sprite( config ) {
+        this.backgroundImage = _assets.get(config.sprite) || null;
         this.name = config.name || (new Date()).getTime();
 
         this.width = config.width || 0;
@@ -18,16 +18,20 @@
 
         this.speed = config.speed || 1;
 
+        this.controls = {
+            up: false,
+            right: false,
+            down: false,
+            left: false,
+            spacebar: false,
+            keyCode: false
+        };
+
         centerX = this.x + (this.width / 2);
         centerY = this.y + (this.height / 2);
         spriteX = 0;
         spriteY = 0;
 
-        // this.isUpKey = false;
-        // this.isDownKey = false;
-        // this.isLeftKey = false;
-        // this.isRightKey = false;
-        // this.isSpaceBar = false;
         // this.isShooting = false;
         // this.bullets = [];
         // this.currentBullet = 0;
@@ -55,10 +59,10 @@
     /*
     * Draw player
     */
-    Sprite.prototype.draw = function() {
+    Sprite.prototype.draw = function( context ) {
         // this.drawAllBullets
         // sprite, startX, startY, width, height, x, y
-        _canvas.draw( this.sprite, spriteX, spriteY, this.width, this.height, this.x, this.y  );
+        context.drawImage( this.backgroundImage, spriteX, spriteY, this.width, this.height, this.x, this.y, this.width, this.height );
     }
 
     /*
@@ -66,7 +70,7 @@
     */
     Sprite.prototype.move = function( direction ) {
         switch (direction) {
-            case 'top':
+            case 'up':
                 this.y -= this.speed;
                 break;
 
@@ -74,7 +78,7 @@
                 this.x += this.speed;
                 break;
 
-            case 'bottom':
+            case 'down':
                 this.y += this.speed;
                 break;
 
@@ -93,7 +97,7 @@
 
     }
 
-    Sprite.prototype.onKeyPress = function() {
+    Sprite.prototype.update = function() {
 
     }
 
