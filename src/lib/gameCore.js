@@ -64,13 +64,12 @@
         // Get main container
         _mainContainer = document.getElementById( config.mainContainer );
         if (!_mainContainer) return GameCore.Logger.error('Cannot find main container');
-
         _mainContainer.className = 'gcMainContainer';
-        _mainContainer.style.width = config.map.viewport.width + 'px';
-        _mainContainer.style.height = config.map.viewport.height + 'px';
 
         // Create current scenet
         _scene =  new GameCore.Scene( _mainContainer, config );
+        _mainContainer.style.width = _scene.width + 'px';
+        _mainContainer.style.height = _scene.height + 'px';
 
         // Create Map
         // if (config.map) {

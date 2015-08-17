@@ -21,8 +21,10 @@
     */
     function Map( config ) {
         if (!config.viewport) {
-            config.viewport.width = config.width;
-            config.viewport.height = config.height;
+            config.viewport = {
+                width: config.width,
+                height: config.height
+            };
         }
 
         // Create canvas
@@ -116,6 +118,13 @@
     Map.prototype.getElement = function() {
         return map.canvas;
     };
+
+    /*
+    * Returns viewport dimensions
+    */
+    Map.prototype.getViewport = function() {
+        return { width:map.canvas.width, height:map.canvas.height };
+    }
 
     /*
     * Returns the limits of the map

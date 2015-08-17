@@ -11,9 +11,15 @@
     function Scene( container, config ) {
         _container = container;
 
+        // Create map
         createMap( config.map );
+        this.width = _map.getViewport().width;
+        this.height = _map.getViewport().height;
+
+        // Create player
         createPlayer( config.player );
 
+        // Create camera
         if (config.map.viewport) {
             _camera = new GameCore.Camera( 0, 0, config.map.viewport.width, config.map.viewport.height, _map.width, _map.height );
             _camera.follow( _player, config.map.viewport.width/2, config.map.viewport.height/2 );
