@@ -4,6 +4,8 @@
 
     player.name = 'frago';
     player.sprite = 'images/hero.png';
+    player.x = 80;
+    player.y = 80;
     player.width = 35;
     player.height = 54;
     player.speed = 2;

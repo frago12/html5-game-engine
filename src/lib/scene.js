@@ -2,7 +2,8 @@
 
     var _container = null
         _map = null,
-        _player = null;
+        _player = null,
+        _camera = null;
 
     /*
     * Constructor
@@ -12,6 +13,11 @@
 
         createMap( config.map );
         createPlayer( config.player );
+
+        if (config.map.viewport) {
+            _camera = new GameCore.Camera( 0, 0, config.map.viewport.width, config.map.viewport.height, _map.width, _map.height );
+            _camera.follow( _player, config.map.viewport.width/2, config.map.viewport.height/2 );
+        }
 
         // Register events
         if (config.events && config.events.keypress) {
@@ -28,9 +34,8 @@
     s.draw = function() {
         _map.clear();
 
-        _map.draw();
-        _map.drawSprite( _player, _player.draw );
-        // _player.draw( _map.getContext() );
+        _map.draw( _camera.xView, _camera.yView );
+        _map.drawSprite( _player, _camera.xView, _camera.yView, _player.draw );
     }
 
     /*
@@ -38,6 +43,7 @@
     */
     s.update = function() {
         _player.update();
+        _camera.update();
     }
 
     /*
@@ -50,6 +56,8 @@
 
         _player = new GameCore.Sprite( config );
         if (config.update) _player.update = config.update;
+
+        _player.setMapLimits( _map.getLimits() );
     }
 
     /*

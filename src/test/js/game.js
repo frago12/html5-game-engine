@@ -13,10 +13,13 @@
                 right: 750,
                 bottom: 570,
                 left: 65
+            },
+
+            viewport: {
+                width: 400,
+                height: 200
             }
         },
-
-        // sprites: [ mainPlayer ],
 
         player: mainPlayer,
 

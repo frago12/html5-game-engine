@@ -2,10 +2,10 @@
 
     var _mainContainer = null,
         _isPlaying = false,
-        _player = null,
-        _sprites = [],
-        _gameEntities = null,
-        _map = null,
+        // _player = null,
+        // _sprites = [],
+        // _gameEntities = null,
+        // _map = null,
         _assets = null,
         _scene = null,
         _requestAnimFrame =  window.requestAnimationFrame ||
@@ -27,72 +27,72 @@
     */
     GameCore.init = function( config ) {
         _assets = GameCore.AssetsManager.getInstance();
-        _config = config;
+        // config = config;
 
         // Load background map asset
-        if (_config.map && _config.map.backgroundImage) {
-            _assets.queueDownload( _config.map.backgroundImage );
+        if (config.map && config.map.backgroundImage) {
+            _assets.queueDownload( config.map.backgroundImage );
         }
 
         // Load sprite assets
-        if (_config.sprites) {
-            for (var i=0,len=_config.sprites.length; i<len; i++) {
-                if (_config.sprites[i].sprite) _assets.queueDownload( _config.sprites[i].sprite );
+        if (config.sprites) {
+            for (var i=0,len=config.sprites.length; i<len; i++) {
+                if (config.sprites[i].sprite) _assets.queueDownload( config.sprites[i].sprite );
             }
         }
 
         // Load player asset
-        if (_config.player) {
-            _assets.queueDownload( _config.player.sprite );
+        if (config.player) {
+            _assets.queueDownload( config.player.sprite );
         }
 
         // Once resources are loaded, start game engine
         _assets.downloadAll(function() {
-            if (_assets.isDone()) loadConfig();
+            if (_assets.isDone()) loadConfig( config );
         });
     }
 
     /*
     * Initialize game objects needded
     */
-    function loadConfig() {
-        if (!_config || !_config.map) return;
+    function loadConfig( config ) {
+        if (!config || !config.map) return;
 
-        _config.width = _config.map.width = _config.map.width || 400;
-        _config.height = _config.map.height = _config.map.height || 400;
+        // config.map.width = config.map.width || 400;
+        // config.map.height = config.map.height || 400;
 
         // Get main container
-        _mainContainer = document.getElementById( _config.mainContainer );
+        _mainContainer = document.getElementById( config.mainContainer );
         if (!_mainContainer) return GameCore.Logger.error('Cannot find main container');
 
         _mainContainer.className = 'gcMainContainer';
-        _mainContainer.style.width = _config.width + 'px';
-        _mainContainer.style.height = _config.height + 'px';
+        _mainContainer.style.width = config.map.viewport.width + 'px';
+        _mainContainer.style.height = config.map.viewport.height + 'px';
 
         // Create current scenet
-        _scene =  new GameCore.Scene( _mainContainer, _config );
+        _scene =  new GameCore.Scene( _mainContainer, config );
 
         // Create Map
-        // if (_config.map) {
+        // if (config.map) {
         //     _map = GameCore.Map.getInstance();
-        //     var mapCanvas = _map.create( _assets.get(_config.map.backgroundImage), _config.map );
+        //     var mapCanvas = _map.create( _assets.get(config.map.backgroundImage), config.map );
         //     _mainContainer.appendChild( mapCanvas );
         // }
 
         // // Create entities canvas
         // _gameEntities = GameCore.EntitiesCanvas.getInstance();
-        // _mainContainer.appendChild( _gameEntities.create( _config.width, _config.height ) );
+        // _mainContainer.appendChild( _gameEntities.create( config.width, config.height ) );
         //
         // // Create sprites
-        // if (_config.sprites) {
-        //     for (var i=0,len=_config.sprites.length; i<len; i++) {
-        //         _sprites.push( createPlayer( _config.sprites[i] ) );
+        // if (config.sprites) {
+        //     for (var i=0,len=config.sprites.length; i<len; i++) {
+        //         _sprites.push( createPlayer( config.sprites[i] ) );
         //     }
         // }
         //
         // // Set main player
-        // if (!_config.player) throw new Error('You have to define a player');
-        // _player = createPlayer( _config.player );
+        // if (!config.player) throw new Error('You have to define a player');
+        // _player = createPlayer( config.player );
         // _sprites.push( _player );
 
         begin();

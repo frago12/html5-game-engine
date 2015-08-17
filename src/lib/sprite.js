@@ -27,6 +27,8 @@
             keyCode: false
         };
 
+        this.mapLimits = {};
+
         centerX = this.x + (this.width / 2);
         centerY = this.y + (this.height / 2);
         spriteX = 0;
@@ -59,16 +61,27 @@
     /*
     * Draw player
     */
-    Sprite.prototype.draw = function( context ) {
+    Sprite.prototype.draw = function( context, xView, yView ) {
         // this.drawAllBullets
         // sprite, startX, startY, width, height, x, y
-        context.drawImage( this.backgroundImage, spriteX, spriteY, this.width, this.height, this.x, this.y, this.width, this.height );
+        context.drawImage( this.backgroundImage, spriteX, spriteY, this.width, this.height, this.x - xView, this.y - yView, this.width, this.height );
+        // context.fillRect((this.x-this.width/2) - xView, (this.y-this.height/2) - yView, this.width, this.height);
+    }
+
+    /*
+    * @override
+    */
+    Sprite.prototype.update = function() {
+
     }
 
     /*
     * Move player to the given direction
     */
     Sprite.prototype.move = function( direction ) {
+        var sx = this.x;
+        var sy = this.y;
+
         switch (direction) {
             case 'up':
                 this.y -= this.speed;
@@ -88,6 +101,11 @@
             default:
                 break;
         }
+
+        if (this.outOfBounds()) {
+            this.x = sx;
+            this.y = sy;
+        }
     }
 
     /*
@@ -97,8 +115,27 @@
 
     }
 
-    Sprite.prototype.update = function() {
+    /*
+    * Determine if the object passed has reached the one the bounds of the map
+    */
+    Sprite.prototype.outOfBounds = function() {
+        var newBottomY = this.y + this.height,
+            newTopY = this.y,
+            newRightX = this.x + this.width,
+            newLeftX = this.x;
 
+        return newBottomY > this.mapLimits.bottom ||
+            newTopY < this.mapLimits.top ||
+            newRightX > this.mapLimits.right ||
+            newLeftX < this.mapLimits.left;
+    }
+
+    /*
+    * Set map limits
+    */
+    Sprite.prototype.setMapLimits = function( limits ) {
+        if (!limits) return;
+        this.mapLimits = limits;
     }
 
 GameCore.Sprite = Sprite;

@@ -76,9 +76,9 @@
 			if(this.viewportRect.top < this.worldRect.top)
 				this.yView = this.worldRect.top;
 			if(this.viewportRect.right > this.worldRect.right)
-				this.xView = this.worldRect.right - this.wView;
+				this.xView = this.worldRect.right - this.viewportWidth;
 			if(this.viewportRect.bottom > this.worldRect.bottom)
-				this.yView = this.worldRect.bottom - this.hView;
+				this.yView = this.worldRect.bottom - this.viewportHeight;
         }
     }
 
