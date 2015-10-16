@@ -104,7 +104,7 @@
         var newBottomY = y + height,
             newTopY = y,
             newRightX = x + width,
-            newLeftX = x;;
+            newLeftX = x;
 
         return newBottomY > map.bottomLimit ||
             newTopY < map.topLimit ||

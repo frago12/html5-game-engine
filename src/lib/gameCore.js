@@ -42,6 +42,16 @@
             _assets.queueDownload( config.player.sprite );
         }
 
+        // Load obstacle assets
+        if (config.obstacles && config.obstacles.length > 0) {
+            for (var i=0,len=config.obstacles.length; i<len; i++) {
+                var obs = config.obstacles[i];
+                if (obs.backgroundImage) {
+                    _assets.queueDownload( obs.backgroundImage );
+                }
+            }
+        }
+
         // Once resources are loaded, start game engine
         _assets.downloadAll(function() {
             if (_assets.isDone()) loadConfig( config );

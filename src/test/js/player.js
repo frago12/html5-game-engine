@@ -17,20 +17,36 @@
     // };
 
     player.update = function() {
-        var direction = '';
+        var direction = '',
+            movePlayer = false;
 
         if (this.controls.up) {
             direction = 'up';
+            movePlayer = true;
         } else if (this.controls.right) {
             direction = 'right';
+            movePlayer = true;
         } else if (this.controls.down) {
             direction = 'down';
+            movePlayer = true;
         } else if (this.controls.left) {
             direction = 'left';
+            movePlayer = true;
         }
 
-        // this.move( key.direction );
-        this.move(direction);
+        // Check collision
+        if (movePlayer) {
+            var position = this.predictMove( direction ),
+                collision = this.isColliding( position.x, position.y );
+
+            if (!collision) {
+                this.move( direction );
+            }
+        }
+    }
+
+    player.onCollision = function( collider ) {
+        this.isColliding = true;
     }
 
 window.mainPlayer = player;

@@ -15,11 +15,23 @@
                 left: 65
             },
 
-            viewport: {
-                width: 400,
-                height: 200
-            }
+            // viewport: {
+            //     width: 400,
+            //     height: 200
+            // }
         },
+
+        obstacles: [
+            tree1,
+            tree2,
+            tree3,
+            tree4,
+            rock1,
+            rock2,
+            bush1,
+            bush2,
+            bush3
+        ],
 
         player: mainPlayer,
 

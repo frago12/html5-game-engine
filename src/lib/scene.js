@@ -3,6 +3,7 @@
     var _container = null
         _map = null,
         _player = null,
+        _obstacles = [],
         _camera = null;
 
     /*
@@ -18,6 +19,9 @@
 
         // Create player
         createPlayer( config.player );
+
+        // Create obstacles
+        createObstacles( config.obstacles );
 
         // Create camera
         if (config.map.viewport) {
@@ -64,6 +68,7 @@
         if (config.update) _player.update = config.update;
 
         _player.setMapLimits( _map.getLimits() );
+        _player.isColliding = collisionDetection;
     }
 
     /*
@@ -76,6 +81,56 @@
 
         _map = new GameCore.Map( config );
         _container.appendChild( _map.getElement() );
+    }
+
+    /*
+    * @private
+    *
+    * Create obstacles in the map
+    */
+    function createObstacles( obstacles ) {
+        var i = 0,
+            len = obstacles.length;
+
+        for (; i<len; i++) {
+            var obs = obstacles[i];
+            _obstacles.push( new GameCore.Obstacle( obs.x, obs.y, obs.width, obs.height, obs.detectCollision ) );
+        }
+    }
+
+    /*
+    * Determine if coordinates passed collide with an element of scene
+    */
+    function collisionDetection(x, y) {
+        var collision = {
+            type: '',
+            object: null
+        };
+
+        // Check out of bounds
+        if (_map.outOfBounds( x, y, _player.width, _player.height )) {
+            collision.type = 'outOfBounds';
+            return collision;
+        }
+
+        // Check obstacles
+        var centerX = x + (_player.width / 2),
+            centerY = y + (_player.height / 2);
+
+        for (var i=0,len=_obstacles.length; i<len; i++) {
+            var obs = _obstacles[i];
+            if (obs.detectCollision( centerX, centerY )) {
+                collision.type = 'obstacle';
+                collision.object = obs;
+                return collision;
+            }
+        }
+
+        // Check enemies
+
+        // Chekc objects
+
+        return false;
     }
 
     /*

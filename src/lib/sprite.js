@@ -6,6 +6,9 @@
         spriteX = 0,
         spriteY = 0;
 
+    /*
+    * Constructor
+    */
     function Sprite( config ) {
         this.backgroundImage = _assets.get(config.sprite) || null;
         this.name = config.name || (new Date()).getTime();
@@ -76,6 +79,36 @@
     }
 
     /*
+    * Retuns the next coordinate (position) of the player
+    */
+    Sprite.prototype.predictMove = function( direction ) {
+        var sx = this.x;
+        var sy = this.y;
+
+        switch (direction) {
+            case 'up':
+                sy -= this.speed;
+                break;
+
+            case 'right':
+                sx += this.speed;
+                break;
+
+            case 'down':
+                sy += this.speed;
+                break;
+
+            case 'left':
+                sx -= this.speed;
+
+            default:
+                break;
+        }
+
+        return { x:sx, y:sy };
+    }
+
+    /*
     * Move player to the given direction
     */
     Sprite.prototype.move = function( direction ) {
@@ -101,11 +134,6 @@
             default:
                 break;
         }
-
-        if (this.outOfBounds()) {
-            this.x = sx;
-            this.y = sy;
-        }
     }
 
     /*
@@ -116,13 +144,25 @@
     }
 
     /*
+    * @override
+    *
+    * overrided by the scene, not by the player itself
+    */
+    Sprite.prototype.isColliding = function() {
+
+    }
+
+    /*
     * Determine if the object passed has reached the one the bounds of the map
     */
-    Sprite.prototype.outOfBounds = function() {
-        var newBottomY = this.y + this.height,
-            newTopY = this.y,
-            newRightX = this.x + this.width,
-            newLeftX = this.x;
+    Sprite.prototype.isOutOfBounds = function( x, y ) {
+        var x = x || this.x,
+            y = y || this.y;
+
+        var newBottomY = y + this.height,
+            newTopY = y,
+            newRightX = x + this.width,
+            newLeftX = x;
 
         return newBottomY > this.mapLimits.bottom ||
             newTopY < this.mapLimits.top ||
