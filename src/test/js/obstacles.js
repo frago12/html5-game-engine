@@ -9,7 +9,7 @@
 
     window.tree2 = {
         x: 390,
-        y: 3395,
+        y: 395,
         width: 65,
         height: 90
     };
